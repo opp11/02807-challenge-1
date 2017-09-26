@@ -9,7 +9,7 @@ with open(fname) as xml:
     chars_written = 0
     crnt_f = open('{}-{}'.format(fname, nfile), 'w')
     for event, elem in etree.iterparse(xml, events=('end',)):
-        if elem.tag.endswith('text'):
+        if elem.tag.endswith('text') and elem.text is not None:
             n += 1
             chars_written += crnt_f.write(
                 elem.text.lower().replace('\n', ' ') + '\n'
