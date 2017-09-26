@@ -14,14 +14,12 @@ with open(fname) as xml:
             chars_written += crnt_f.write(
                 elem.text.lower().replace('\n', ' ') + '\n'
             )
-            if chars_written > 4e9:
+            if chars_written > 2e9:  # Cap file at ~2 GB
                 print(crnt_f.name)
                 crnt_f.close()
                 nfile += 1
                 chars_written = 0
                 crnt_f = open('{}-{}'.format(fname, nfile), 'w')
-                etree.clear()
-                while elem.getprevious() is not None:
-                    del elem.getparen()[0]
-
+        elem.clear()
+    crnt_f.close()
 print(n)
