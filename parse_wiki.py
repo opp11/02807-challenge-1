@@ -14,11 +14,11 @@ with open(fname) as xml:
             chars_written += crnt_f.write(
                 elem.text.lower().replace('\n', ' ') + '\n'
             )
-            if chars_written > 1e6:
+            if chars_written > 4e9:
+                print(crnt_f.name)
                 crnt_f.close()
                 nfile += 1
                 chars_written = 0
                 crnt_f = open('{}-{}'.format(fname, nfile), 'w')
-
 
 print(n)
