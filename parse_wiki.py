@@ -20,5 +20,8 @@ with open(fname) as xml:
                 nfile += 1
                 chars_written = 0
                 crnt_f = open('{}-{}'.format(fname, nfile), 'w')
+                etree.clear()
+                while elem.getprevious() is not None:
+                    del elem.getparen()[0]
 
 print(n)
