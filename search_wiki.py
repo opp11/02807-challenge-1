@@ -48,8 +48,8 @@ def main(argv):
     if len(argv) < 2:
         raise ValueError('Must supply two command line arguments')
 
-    pattern = argv[0]
-    wikifile = argv[1]
+    pattern = argv[1]
+    wikifile = argv[2]
     for r in search_wiki(pattern, wikifile):
         print(r)
 
