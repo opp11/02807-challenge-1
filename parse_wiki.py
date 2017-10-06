@@ -1,26 +1,27 @@
 import sys
 import xml.etree.ElementTree as etree
 
-fname = sys.argv[1] if len(sys.argv) > 1 else 'wiki20k.xml'
+def parse_wiki(xmlfile, outfile=None):
+    if outfile is None:
+        outfile = xmlfile + '-all'
+    with open(xmlfile) as xml, open(outfile, 'w') as out:
+        for event, elem in etree.iterparse(xml, events=('end',)):
+            if elem.tag.endswith('text') and elem.text is not None and not \
+                elem.text.lower().startswith('#redirect'):
+                out.write(
+                    elem.text.lower().replace('\n', ' ') + '\n'
+                )
+            elem.clear()
 
-n = 0
-nfile = 0
-with open(fname) as xml:
-    chars_written = 0
-    crnt_f = open('{}-{}'.format(fname, nfile), 'w')
-    for event, elem in etree.iterparse(xml, events=('end',)):
-        if elem.tag.endswith('text') and elem.text is not None and not \
-            elem.text.lower().startswith('#redirect'):
-            n += 1
-            chars_written += crnt_f.write(
-                elem.text.lower().replace('\n', ' ') + '\n'
-            )
-            if chars_written > 2e9:  # Cap file at ~2 GB
-                print(crnt_f.name)
-                crnt_f.close()
-                nfile += 1
-                chars_written = 0
-                crnt_f = open('{}-{}'.format(fname, nfile), 'w')
-        elem.clear()
-    crnt_f.close()
-print(n)
+
+def main(argv):
+    if len(argv) < 2:
+        raise ValueError('Must supply xml file name')
+
+    xmlfile = argv[1]
+    outfile = argv[2] if len(argv) > 2 else None
+    parse_wiki(xmlfile, outfile)
+
+
+if __name__ == '__main__':
+    main(sys.argv)
