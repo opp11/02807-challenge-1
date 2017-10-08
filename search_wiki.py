@@ -40,12 +40,23 @@ def make_grep_cmd(pattern, filename):
 
 def search_wiki(pattern, wikifile):
     cmd = make_grep_cmd(pattern, wikifile)
-    res = subprocess.check_output(cmd)
-    return res.decode('utf-8').split('\n')
+    try:
+        res = subprocess.check_output(cmd)
+        res = res.decode('utf-8').split('\n')
+        if res[-1] == '':
+            # Newline appended to process output, resulting in an "empty" line.
+            return res[:-1]
+        else:
+            return res
+    except subprocess.CalledProcessError:
+        # ripgrep returns 1 if no results are found.
+        # This causes a CalledProcessError to be raised, but simply means we
+        # should return no matches
+        return []
 
 
 def main(argv):
-    if len(argv) < 2:
+    if len(argv) < 3:
         raise ValueError('Must supply two command line arguments')
 
     pattern = argv[1]
